@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Trello Attach Cards
 // @description  Parse description contents, attach cards those urls are mentioned in the contents
-// @version      0.1
+// @version      1.0.0
 // @author       Hikerpig
-// @copyright    2019 hikerpig (https://openuserjs.org/users/hikerpig)
+// @copyright    2019 hikerpig (https://github.com/hikerpig)
 // @licence      MIT
 // @match        https://trello.com/c/*
 // @match        https://trello.com/b/*
@@ -13,7 +13,7 @@
 ;(function() {
   'use strict'
 
-  const TRELLO_CARD_LINK_PATTERN = /\/c\/([\d\w]+)\//
+  const TRELLO_CARD_LINK_PATTERN = /\/c\/([\d\w]+)\/?/
 
   /**
    * @type MutationObserver
@@ -75,15 +75,26 @@
         attachBtn.click()
 
         setTimeout(() => {
-          const addLinkInput = document.getElementById('addLink')
-          addLinkInput.value = hrefs[curLinkIndex]
-          const attachSubmitBtn = document.querySelector('.js-add-attachment-url')
-          attachSubmitBtn.click()
-          curLinkIndex++
+          const tryAdd = (retryTimes) => {
+            const addLinkInput = document.getElementById('addLink')
+            if (!addLinkInput) {
+              if (!retryTimes) return
+              setTimeout(() => {
+                tryAdd(--retryTimes)
+              }, 300);
+              return
+            }
+            addLinkInput.value = hrefs[curLinkIndex]
+            const attachSubmitBtn = document.querySelector('.js-add-attachment-url')
+            attachSubmitBtn.click()
+            curLinkIndex++
 
-          setTimeout(() => {
-            attachNextLink()
-          }, 200)
+            setTimeout(() => {
+              attachNextLink()
+            }, 500)
+          }
+
+          tryAdd(4)
 
         }, 500);
       }, 100);
