@@ -6,7 +6,6 @@
 // @copyright    2019 hikerpig (https://github.com/hikerpig)
 // @licence      MIT
 // @match        https://trello.com/b/*
-// @require      https://unpkg.com/zepto@1.1.0/dist/zepto.js
 // @grant        none
 // ==/UserScript==
 
